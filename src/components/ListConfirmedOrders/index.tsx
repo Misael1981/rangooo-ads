@@ -40,14 +40,17 @@ const ListConfirmedOrders = ({
   }, [orders, slug])
 
   return (
-    <ScrollArea>
-      <section className="flex items-center gap-2">
-        {orders.map((order) => (
-          <CardOrderBasic key={order.id} order={order} />
-        ))}
-      </section>
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+    <section className="space-y-2 border-b pb-4 md:w-fit md:border-r md:border-b-0 md:pr-4">
+      <h2 className="">Pedidos Confirmados</h2>
+      <ScrollArea>
+        <div className="flex items-center gap-4 md:flex-col">
+          {orders.map((order) => (
+            <CardOrderBasic key={order.id} order={order} />
+          ))}
+        </div>
+        <ScrollBar orientation="horizontal" className="md:hidden" />
+      </ScrollArea>
+    </section>
   )
 }
 

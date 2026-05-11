@@ -45,7 +45,7 @@ export async function getOrdersData(slug: string, method?: ConsumptionMethod) {
         },
       },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: "asc" },
   })
 
   // NORMALIZAÇÃO DIRETO NO SERVER
