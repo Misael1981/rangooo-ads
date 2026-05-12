@@ -1,4 +1,8 @@
-import { AreaType, OrderStatus } from "@misael1981/rangooo-database"
+import {
+  AreaType,
+  OrderStatus,
+  PaymentMethod,
+} from "@misael1981/rangooo-database"
 
 export type OrderAddress = {
   street: string
@@ -22,9 +26,22 @@ export type OrderItemDTO = {
   additionalIngredients?: string[]
 
   isDouble?: boolean
+  flavor1Name?: string
+  flavor1Removed?: string[]
+  flavor1additionalIngredients?: [
+    {
+      name: string
+      price: number
+    },
+  ]
   flavor2Name?: string
   flavor2Removed?: string[]
-  flavor2additionalIngredients?: string[]
+  flavor2additionalIngredients?: [
+    {
+      name: string
+      price: number
+    },
+  ]
 }
 
 export type OrderItemPrintDTO = {
@@ -42,7 +59,7 @@ export type OrderDTO = {
   id: string
   customerName: string
   customerPhone: string
-  paymentMethod: string | null
+  paymentMethod: PaymentMethod | null
   orderNumber: number
   totalAmount: number
   status: OrderStatus
