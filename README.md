@@ -151,3 +151,33 @@ Pedido criado com sucesso: {
   ]
 }
 ```
+
+```
+flavor1Name: i.flavor1Name || undefined,
+      flavor1Removed: i.flavor1Removed
+        ? JSON.parse(i.flavor1Removed as string)
+        : undefined,
+      flavor1additionalIngredients: i.flavor1additionalIngredients
+        ? JSON.parse(i.flavor1additionalIngredients as string)
+        : undefined,
+      flavor2Name: i.flavor2Name || undefined,
+      flavor2Removed: i.flavor2Removed
+        ? JSON.parse(i.flavor2Removed as string)
+        : undefined,
+      flavor2additionalIngredients: i.flavor2additionalIngredients
+        ? JSON.parse(i.flavor2additionalIngredients as string)
+        : undefined,
+
+ flavor1Name: i.flavor1Name || undefined,
+      flavor1Removed: i.flavor1Removed
+        ? JSON.parse(i.flavor1Removed as string)
+        : undefined,
+      flavor1additionalIngredients:
+        (i.flavor1additionalIngredients as string[]) || undefined,
+      flavor2Name: i.flavor2Name || undefined,
+      flavor2Removed: i.flavor2Removed
+        ? JSON.parse(i.flavor2Removed as string)
+        : undefined,
+      flavor2additionalIngredients:
+        (i.flavor2additionalIngredients as string[]) || undefined,
+```

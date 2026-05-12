@@ -26,22 +26,12 @@ export type OrderItemDTO = {
   additionalIngredients?: string[]
 
   isDouble?: boolean
-  flavor1Name?: string
-  flavor1Removed?: string[]
-  flavor1additionalIngredients?: [
-    {
-      name: string
-      price: number
-    },
-  ]
-  flavor2Name?: string
-  flavor2Removed?: string[]
-  flavor2additionalIngredients?: [
-    {
-      name: string
-      price: number
-    },
-  ]
+  flavor1Name: string | null
+  flavor1Removed: string[]
+  flavor1additionalIngredients: { name: string; price: number }[] | null // ← era tupla, agora array
+  flavor2Name: string | null
+  flavor2Removed: string[] | null
+  flavor2additionalIngredients: { name: string; price: number }[] | null // ← era tupla, agora array
 }
 
 export type OrderItemPrintDTO = {
@@ -65,6 +55,9 @@ export type OrderDTO = {
   status: OrderStatus
   method: "DELIVERY" | "PICKUP" | "DINE_IN"
   createdAt: string
+  preparingAt: string | null
+  dispatchedAt: string | null
+  deliveredAt: string | null
   items: OrderItemDTO[]
   address?:
     | {

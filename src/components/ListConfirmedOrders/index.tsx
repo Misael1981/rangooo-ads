@@ -45,7 +45,7 @@ const ListConfirmedOrders = ({
       <ScrollArea>
         <div className="flex items-center gap-4 md:flex-col">
           {orders.map((order) => (
-            <CardOrderBasic key={order.id} order={order} />
+            <CardOrderBasic key={order.id} order={order} slug={slug} />
           ))}
         </div>
         <ScrollBar orientation="horizontal" className="md:hidden" />

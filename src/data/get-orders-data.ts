@@ -1,8 +1,13 @@
 import { parseAddress } from "@/helpers/parse-address"
-import { ConsumptionMethod, prisma } from "@misael1981/rangooo-database"
+import { db } from "@/lib/prisma"
+import {
+  ConsumptionMethod,
+  PaymentMethod,
+  OrderStatus,
+} from "@misael1981/rangooo-database"
 
 export async function getOrdersData(slug: string, method?: ConsumptionMethod) {
-  const restaurant = await prisma.restaurant.findUnique({
+  const restaurant = await db.restaurant.findUnique({
     where: { slug },
     select: {
       id: true,
@@ -25,7 +30,7 @@ export async function getOrdersData(slug: string, method?: ConsumptionMethod) {
   const endOfShift = new Date(startOfShift)
   endOfShift.setDate(endOfShift.getDate() + 1)
 
-  const orders = await prisma.order.findMany({
+  const orders = await db.order.findMany({
     where: {
       restaurantId: restaurant.id,
       consumptionMethod: method,
@@ -55,10 +60,13 @@ export async function getOrdersData(slug: string, method?: ConsumptionMethod) {
     customerPhone: order.user?.phone ?? "",
     totalAmount: Number(order.totalAmount),
     orderNumber: Number(order.orderNumber),
-    status: order.status,
-    method: order.consumptionMethod,
-    paymentMethod: order.paymentMethod,
+    status: order.status as OrderStatus,
+    method: order.consumptionMethod as "DELIVERY" | "PICKUP" | "DINE_IN",
+    paymentMethod: order.paymentMethod as PaymentMethod | null,
     createdAt: order.createdAt.toISOString(),
+    preparingAt: order.preparingAt?.toISOString() || null, // Garanta que trate o nulo
+    dispatchedAt: order.dispatchedAt?.toISOString() || null,
+    deliveredAt: order.deliveredAt?.toISOString() || null,
     address: parseAddress(order.deliveryAddress),
     items: order.items.map((i) => ({
       id: i.id,
@@ -69,20 +77,30 @@ export async function getOrdersData(slug: string, method?: ConsumptionMethod) {
       removedIngredients: i.removedIngredients,
       additionalIngredients: (i.additionalIngredients as string[]) || undefined,
       category: i.product.menuCategory?.name ?? "Geral",
-      // SABOR 2:
+      // 2 SABORES
       isDouble: i.isDouble,
-      flavor1Name: i.flavor1Name || undefined,
+
+      flavor1Name: i.flavor1Name || null,
       flavor1Removed: i.flavor1Removed
         ? JSON.parse(i.flavor1Removed as string)
-        : undefined,
-      flavor1additionalIngredients:
-        (i.flavor1additionalIngredients as string[]) || undefined,
-      flavor2Name: i.flavor2Name || undefined,
+        : null,
+      flavor1additionalIngredients: i.flavor1additionalIngredients
+        ? (i.flavor1additionalIngredients as string[]).map((name) => ({
+            name,
+            price: 0, // Valor padrão para satisfazer o DTO
+          }))
+        : null,
+
+      flavor2Name: i.flavor2Name || null,
       flavor2Removed: i.flavor2Removed
         ? JSON.parse(i.flavor2Removed as string)
-        : undefined,
-      flavor2additionalIngredients:
-        (i.flavor2additionalIngredients as string[]) || undefined,
+        : null,
+      flavor2additionalIngredients: i.flavor2additionalIngredients
+        ? (i.flavor2additionalIngredients as string[]).map((name) => ({
+            name,
+            price: 0, // Valor padrão para satisfazer o DTO
+          }))
+        : null,
     })),
   }))
 

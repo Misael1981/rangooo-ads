@@ -6,7 +6,12 @@ import { OrderDTO } from "@/dtos/order.dto"
 import DialogSelectedOrder from "../DialogSelectedOrder"
 import { METHOD_CONFIG } from "@/constants/enum-maps"
 
-const CardOrderBasic = ({ order }: { order: OrderDTO }) => {
+type CardOrderBasicProps = {
+  order: OrderDTO
+  slug: string
+}
+
+const CardOrderBasic = ({ order, slug }: CardOrderBasicProps) => {
   const [minutesElapsed, setMinutesElapsed] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -64,6 +69,7 @@ const CardOrderBasic = ({ order }: { order: OrderDTO }) => {
         open={isOpen}
         onOpenChange={setIsOpen}
         order={order}
+        slug={slug}
       />
     </>
   )
