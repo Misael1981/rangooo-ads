@@ -1,10 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { Card } from "../ui/card"
 import { OrderDTO } from "@/dtos/order.dto"
 import DialogSelectedOrder from "../DialogSelectedOrder"
 import { METHOD_CONFIG } from "@/constants/enum-maps"
+import { Button } from "../ui/button"
+import { startPreparation } from "@/app/actions/start-preparation"
+import { toast } from "sonner"
 
 type CardOrderBasicProps = {
   order: OrderDTO
@@ -14,6 +17,7 @@ type CardOrderBasicProps = {
 const CardOrderBasic = ({ order, slug }: CardOrderBasicProps) => {
   const [minutesElapsed, setMinutesElapsed] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
     const calculateTime = () => {
@@ -45,6 +49,17 @@ const CardOrderBasic = ({ order, slug }: CardOrderBasicProps) => {
     setIsOpen(true)
   }
 
+  const handleStart = () => {
+    startTransition(async () => {
+      const result = await startPreparation(order.id, slug)
+      if (result.success) {
+        toast.success("Produção iniciada!")
+      } else {
+        toast.error(result.error)
+      }
+    })
+  }
+
   return (
     <>
       <Card
@@ -69,7 +84,11 @@ const CardOrderBasic = ({ order, slug }: CardOrderBasicProps) => {
         open={isOpen}
         onOpenChange={setIsOpen}
         order={order}
-        slug={slug}
+        actionButton={
+          <Button onClick={handleStart} disabled={isPending}>
+            {isPending ? "INICIANDO..." : "INICIAR PREPARO"}
+          </Button>
+        }
       />
     </>
   )

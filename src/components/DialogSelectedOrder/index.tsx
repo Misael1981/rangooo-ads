@@ -11,15 +11,12 @@ import { Badge } from "../ui/badge"
 import { METHOD_CONFIG } from "@/constants/enum-maps"
 import { formatCurrency } from "@/helpers/format-currency"
 import OrderItems from "../OrderItems"
-import { useTransition } from "react"
-import { startPreparation } from "@/app/actions/start-preparation"
-import { toast } from "sonner"
 
 type DialogSelectedOrderProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   order: OrderDTO
-  slug: string
+  actionButton?: React.ReactNode
 }
 
 const paymentMethodType = {
@@ -32,26 +29,13 @@ const DialogSelectedOrder = ({
   open,
   onOpenChange,
   order,
-  slug,
+  actionButton,
 }: DialogSelectedOrderProps) => {
-  const [isPending, startTransition] = useTransition()
-
-  const handleStart = () => {
-    startTransition(async () => {
-      const result = await startPreparation(order.id, slug)
-      if (result.success) {
-        toast.success("Produção iniciada!")
-      } else {
-        toast.error(result.error)
-      }
-    })
-  }
-
   const methodConfig = METHOD_CONFIG[order.method]
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="p-4">
         <DialogHeader className="border-b pb-4">
           <DialogTitle>
             <Badge>{order.orderNumber}</Badge>
@@ -106,10 +90,10 @@ const DialogSelectedOrder = ({
             </div>
           </div>
         </div>
-        <DialogFooter>
-          <Button onClick={handleStart} disabled={isPending}>
-            {isPending ? "INICIANDO..." : "INICIAR PREPARO"}
-          </Button>
+        <DialogFooter className="md:justify-center">
+          <Button>imprimir Endereço</Button>
+          <Button>Imprimir Pedido</Button>
+          {actionButton}
         </DialogFooter>
       </DialogContent>
     </Dialog>

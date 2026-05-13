@@ -5,6 +5,7 @@ import CardOrderBasic from "../CardOrderBasic"
 import { ScrollArea, ScrollBar } from "../ui/scroll-area"
 import { OrderDTO } from "@/dtos/order.dto"
 import { confirmOrders } from "@/app/actions/confirm-orders"
+import { Badge } from "../ui/badge"
 
 type ListConfirmedOrdersProps = {
   initialOrders: OrderDTO[]
@@ -40,8 +41,11 @@ const ListConfirmedOrders = ({
   }, [orders, slug])
 
   return (
-    <section className="space-y-2 border-b pb-4 md:w-fit md:border-r md:border-b-0 md:pr-4">
-      <h2 className="">Pedidos Confirmados</h2>
+    <section className="space-y-2 border-b py-4 md:w-fit md:border-r md:border-b-0 md:pr-4">
+      <div className="space-y-2 space-x-2 text-center">
+        <h2 className="">Pedidos Confirmados</h2>
+        <Badge variant="outline">{orders.length}</Badge>
+      </div>
       <ScrollArea>
         <div className="flex items-center gap-4 md:flex-col">
           {orders.map((order) => (
