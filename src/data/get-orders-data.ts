@@ -1,14 +1,10 @@
 import { parseAddress } from "@/helpers/parse-address"
 import { db } from "@/lib/prisma"
-import {
-  ConsumptionMethod,
-  PaymentMethod,
-  OrderStatus,
-} from "@misael1981/rangooo-database"
+import { PaymentMethod, OrderStatus } from "@misael1981/rangooo-database"
 
 type FlavorAdditionalIngredient = string | { name: string; price: number }
 
-export async function getOrdersData(slug: string, method?: ConsumptionMethod) {
+export async function getOrdersData(slug: string) {
   const restaurant = await db.restaurant.findUnique({
     where: { slug },
     select: {
@@ -35,7 +31,6 @@ export async function getOrdersData(slug: string, method?: ConsumptionMethod) {
   const orders = await db.order.findMany({
     where: {
       restaurantId: restaurant.id,
-      consumptionMethod: method,
       status: { not: "CANCELED" },
       createdAt: { gte: startOfShift, lt: endOfShift },
     },
