@@ -16,7 +16,7 @@ export async function startPreparation(orderId: string, slug: string) {
       },
     })
 
-    revalidatePath(`/${slug}/production`)
+    revalidatePath(`/${slug}`)
     await pusherServer
       .trigger(slug, "order-updated", { id: orderId, status: "PREPARING" })
       .catch((err) => console.error("❌ Erro Pusher KDS:", err))

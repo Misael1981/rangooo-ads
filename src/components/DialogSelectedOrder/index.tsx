@@ -91,8 +91,10 @@ const DialogSelectedOrder = ({
           </div>
         </div>
         <DialogFooter className="md:justify-center">
-          <Button>imprimir Endereço</Button>
-          <Button>Imprimir Pedido</Button>
+          <div className="flex gap-2">
+            <Button>imprimir Endereço</Button>
+            <Button>Imprimir Pedido</Button>
+          </div>
           {actionButton}
         </DialogFooter>
       </DialogContent>

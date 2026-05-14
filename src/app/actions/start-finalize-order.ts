@@ -23,7 +23,7 @@ export async function startFinalizeOrder(orderId: string, slug: string) {
       })
       .catch((err) => console.error("❌ Erro Pusher KDS:", err))
 
-    revalidatePath(`/${slug}/production`)
+    revalidatePath(`/${slug}`)
 
     // Notifica cada cliente individualmente
     await notifyClientAboutOrderUpdate(orderId)

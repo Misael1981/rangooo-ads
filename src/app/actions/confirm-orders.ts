@@ -23,7 +23,7 @@ export async function confirmOrders(orderIds: string[], slug: string) {
     // Notifica cada cliente individualmente
     await Promise.all(orderIds.map((id) => notifyClientAboutOrderUpdate(id)))
 
-    revalidatePath(`/${slug}/production`)
+    revalidatePath(`/${slug}`)
 
     return { success: true }
   } catch (error) {
