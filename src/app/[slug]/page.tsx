@@ -46,7 +46,7 @@ export default async function ProductionPage({
       <main className="flex-1 p-4 md:flex">
         <ListConfirmedOrders initialOrders={confirmedOrders} slug={slug} />
         <PreparingOrdersList orders={preparingOrders} slug={slug} />
-        <section className="space-y-2 border-t pt-4 pl-4 md:w-fit md:border-t-0 md:border-l">
+        <section className="space-y-2 border-t pl-4 md:w-fit md:border-t-0 md:border-l">
           <OutForDeliveryList orders={outForDeliveryOrders} slug={slug} />
           {readyForPickupOrders.length > 0 && (
             <ReadyForPickupList orders={readyForPickupOrders} slug={slug} />

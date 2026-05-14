@@ -6,6 +6,8 @@ import {
   OrderStatus,
 } from "@misael1981/rangooo-database"
 
+type FlavorAdditionalIngredient = string | { name: string; price: number }
+
 export async function getOrdersData(slug: string, method?: ConsumptionMethod) {
   const restaurant = await db.restaurant.findUnique({
     where: { slug },
@@ -84,22 +86,31 @@ export async function getOrdersData(slug: string, method?: ConsumptionMethod) {
       flavor1Removed: i.flavor1Removed
         ? JSON.parse(i.flavor1Removed as string)
         : null,
-      flavor1additionalIngredients: i.flavor1additionalIngredients
-        ? (i.flavor1additionalIngredients as string[]).map((name) => ({
-            name,
-            price: 0, // Valor padrão para satisfazer o DTO
-          }))
+      flavor1additionalIngredients: Array.isArray(
+        i.flavor1additionalIngredients,
+      )
+        ? (i.flavor1additionalIngredients as FlavorAdditionalIngredient[]).map(
+            (extra) => ({
+              name: typeof extra === "string" ? extra : extra.name,
+              price: typeof extra === "string" ? 0 : extra.price,
+            }),
+          )
+        : null,
+
+      flavor2additionalIngredients: Array.isArray(
+        i.flavor2additionalIngredients,
+      )
+        ? (i.flavor2additionalIngredients as FlavorAdditionalIngredient[]).map(
+            (extra) => ({
+              name: typeof extra === "string" ? extra : extra.name,
+              price: typeof extra === "string" ? 0 : extra.price,
+            }),
+          )
         : null,
 
       flavor2Name: i.flavor2Name || null,
       flavor2Removed: i.flavor2Removed
         ? JSON.parse(i.flavor2Removed as string)
-        : null,
-      flavor2additionalIngredients: i.flavor2additionalIngredients
-        ? (i.flavor2additionalIngredients as string[]).map((name) => ({
-            name,
-            price: 0, // Valor padrão para satisfazer o DTO
-          }))
         : null,
     })),
   }))
