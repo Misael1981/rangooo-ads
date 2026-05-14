@@ -19,7 +19,7 @@ const ListConfirmedOrders = ({
   const [orders, setOrders] = useState<OrderDTO[]>(initialOrders)
 
   useEffect(() => {
-    const pendingIds = initialOrders
+    const pendingIds = orders
       .filter((o) => o.status === "PENDING")
       .map((o) => o.id)
 
@@ -40,7 +40,7 @@ const ListConfirmedOrders = ({
     }
 
     autoConfirm()
-  }, [initialOrders, slug])
+  }, [orders, slug])
 
   const confirmedOrders = orders.filter((order) => order.status === "CONFIRMED")
 
