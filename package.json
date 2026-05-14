@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "cd node_modules/@misael1981/rangooo-database && npx prisma generate"
   },
   "dependencies": {
     "@misael1981/rangooo-database": "github:Misael1981/rangooo-database",
