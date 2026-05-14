@@ -9,6 +9,9 @@ import OutForDeliveryList from "@/components/OutForDeliveryList"
 import PreparingOrdersList from "@/components/PreparingOrdersList"
 import ReadyForPickupList from "@/components/ReadyForPickupList"
 import { getOrdersData } from "@/data/get-orders-data"
+import { OrderDTO } from "@/dtos/order.dto"
+import { db } from "@/lib/prisma"
+import { OrderStatus } from "@misael1981/rangooo-database"
 import { notFound } from "next/navigation"
 
 export default async function ProductionPage({
@@ -31,6 +34,27 @@ export default async function ProductionPage({
     (order) => order.status === "PENDING" || order.status === "CONFIRMED",
   )
 
+  const orderIds = pendingOrders
+    .filter((o) => o.status === "PENDING")
+    .map((o) => o.id)
+
+  if (orderIds.length > 0) {
+    await db.order.updateMany({
+      where: {
+        id: { in: orderIds },
+        status: "PENDING",
+      },
+      data: {
+        status: "CONFIRMED",
+      },
+    })
+  }
+
+  const confirmedOrders: OrderDTO[] = pendingOrders.map((order) => ({
+    ...order,
+    status: OrderStatus.CONFIRMED,
+  }))
+
   const preparingOrders = orders.filter((order) => order.status === "PREPARING")
 
   const outForDeliveryOrders = orders.filter(
@@ -47,7 +71,7 @@ export default async function ProductionPage({
     <div className="flex h-screen flex-col justify-between">
       <Header />
       <main className="flex-1 p-4 md:flex">
-        <ListConfirmedOrders initialOrders={pendingOrders} slug={slug} />
+        <ListConfirmedOrders initialOrders={confirmedOrders} slug={slug} />
         <PreparingOrdersList orders={preparingOrders} slug={slug} />
         <section className="space-y-2 border-t pl-4 md:w-fit md:border-t-0 md:border-l">
           <OutForDeliveryList orders={outForDeliveryOrders} slug={slug} />
