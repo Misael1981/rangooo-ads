@@ -1,8 +1,6 @@
 "use server"
 
 import { db } from "@/lib/prisma"
-import { pusherServer } from "@/lib/pusher-server"
-import { notifyClientAboutOrderUpdate } from "@/services/notification.service"
 import { revalidatePath } from "next/cache"
 
 export async function startPreparation(orderId: string, slug: string) {
@@ -17,12 +15,11 @@ export async function startPreparation(orderId: string, slug: string) {
     })
 
     revalidatePath(`/${slug}`)
-    await pusherServer
-      .trigger(slug, "order-updated", { id: orderId, status: "PREPARING" })
-      .catch((err) => console.error("❌ Erro Pusher KDS:", err))
+    // await pusherServer
+    //   .trigger(slug, "order-updated", { id: orderId, status: "PREPARING" })
+    //   .catch((err) => console.error("❌ Erro Pusher KDS:", err))
 
-    // Notifica cada cliente individualmente
-    await notifyClientAboutOrderUpdate(orderId)
+    // await notifyClientAboutOrderUpdate(orderId)
 
     return { success: true }
   } catch (error) {
