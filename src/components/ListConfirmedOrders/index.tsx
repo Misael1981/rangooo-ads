@@ -19,26 +19,28 @@ const ListConfirmedOrders = ({
   const [orders, setOrders] = useState<OrderDTO[]>(initialOrders)
 
   useEffect(() => {
-    const pendingIds = orders
+    const pendingIds = initialOrders
       .filter((o) => o.status === "PENDING")
       .map((o) => o.id)
 
-    if (pendingIds.length > 0) {
-      console.log("🤖 Auto-confirmando lote de pedidos:", pendingIds)
+    if (pendingIds.length === 0) return
 
-      confirmOrders(pendingIds, slug).then((result) => {
-        if (result?.success) {
-          setOrders((prev) =>
-            prev.map((order) =>
-              pendingIds.includes(order.id)
-                ? { ...order, status: "CONFIRMED" }
-                : order,
-            ),
-          )
-        }
-      })
+    const autoConfirm = async () => {
+      const result = await confirmOrders(pendingIds, slug)
+
+      if (result?.success) {
+        setOrders((prev) =>
+          prev.map((order) =>
+            pendingIds.includes(order.id)
+              ? { ...order, status: "CONFIRMED" }
+              : order,
+          ),
+        )
+      }
     }
-  }, [orders, slug])
+
+    autoConfirm()
+  }, [initialOrders, slug])
 
   const confirmedOrders = orders.filter((order) => order.status === "CONFIRMED")
 
@@ -50,7 +52,7 @@ const ListConfirmedOrders = ({
     <section className="space-y-2 border-b pb-4 md:flex md:h-full md:w-fit md:flex-col md:justify-between md:border-r md:border-b-0 md:pr-4">
       <div className="flex items-center justify-between space-y-2 space-x-2 md:flex-col md:text-center">
         <h2 className="text-sm text-gray-500">Pedidos Confirmados</h2>
-        <Badge variant="outline">{orders.length}</Badge>
+        <Badge variant="outline">{confirmedOrders.length}</Badge>
       </div>
       <ScrollArea className="md:h-[50vh]">
         <div className="flex items-center gap-4 md:flex-col">

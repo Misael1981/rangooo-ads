@@ -27,8 +27,8 @@ export default async function ProductionPage({
 
   const orders = data.orders
 
-  const confirmedOrders = orders.filter(
-    (order) => order.status === "CONFIRMED" || order.status === "PENDING",
+  const pendingOrders = orders.filter(
+    (order) => order.status === "PENDING" || order.status === "CONFIRMED",
   )
 
   const preparingOrders = orders.filter((order) => order.status === "PREPARING")
@@ -47,7 +47,7 @@ export default async function ProductionPage({
     <div className="flex h-screen flex-col justify-between">
       <Header />
       <main className="flex-1 p-4 md:flex">
-        <ListConfirmedOrders initialOrders={confirmedOrders} slug={slug} />
+        <ListConfirmedOrders initialOrders={pendingOrders} slug={slug} />
         <PreparingOrdersList orders={preparingOrders} slug={slug} />
         <section className="space-y-2 border-t pl-4 md:w-fit md:border-t-0 md:border-l">
           <OutForDeliveryList orders={outForDeliveryOrders} slug={slug} />
