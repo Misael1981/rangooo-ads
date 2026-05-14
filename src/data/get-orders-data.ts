@@ -24,9 +24,10 @@ export async function getOrdersData(slug: string) {
   const now = new Date()
   const cutoffHour = 6
   const startOfShift = new Date(now)
-  if (now.getHours() < cutoffHour)
+  if (now.getUTCHours() < cutoffHour)
+    // Mude para getUTCHours()
     startOfShift.setDate(startOfShift.getDate() - 1)
-  startOfShift.setHours(cutoffHour, 0, 0, 0)
+  startOfShift.setUTCHours(cutoffHour, 0, 0, 0)
   const endOfShift = new Date(startOfShift)
   endOfShift.setDate(endOfShift.getDate() + 1)
 
