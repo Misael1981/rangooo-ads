@@ -1,10 +1,12 @@
 import { parseAddress } from "@/helpers/parse-address"
 import { db } from "@/lib/prisma"
 import { PaymentMethod, OrderStatus } from "@misael1981/rangooo-database"
+import { unstable_noStore as noStore } from "next/cache"
 
 type FlavorAdditionalIngredient = string | { name: string; price: number }
 
 export async function getOrdersData(slug: string) {
+  noStore()
   const restaurant = await db.restaurant.findUnique({
     where: { slug },
     select: {
