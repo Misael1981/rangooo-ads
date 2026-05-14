@@ -12,9 +12,14 @@ import { toast } from "sonner"
 type CardOrderBasicProps = {
   order: OrderDTO
   slug: string
+  onRemoveOrder: (orderId: string) => void
 }
 
-const CardOrderBasic = ({ order, slug }: CardOrderBasicProps) => {
+const CardOrderBasic = ({
+  order,
+  slug,
+  onRemoveOrder,
+}: CardOrderBasicProps) => {
   const [minutesElapsed, setMinutesElapsed] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -54,6 +59,8 @@ const CardOrderBasic = ({ order, slug }: CardOrderBasicProps) => {
       const result = await startPreparation(order.id, slug)
       if (result.success) {
         toast.success("Produção iniciada!")
+        onRemoveOrder(order.id)
+        setIsOpen(false)
       } else {
         toast.error(result.error)
       }

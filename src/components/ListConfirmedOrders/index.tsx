@@ -40,16 +40,27 @@ const ListConfirmedOrders = ({
     }
   }, [orders, slug])
 
+  const confirmedOrders = orders.filter((order) => order.status === "CONFIRMED")
+
+  const removeOrderFromList = (orderId: string) => {
+    setOrders((prev) => prev.filter((o) => o.id !== orderId))
+  }
+
   return (
-    <section className="space-y-2 border-b py-4 md:w-fit md:border-r md:border-b-0 md:pr-4">
-      <div className="space-y-2 space-x-2 text-center">
-        <h2 className="">Pedidos Confirmados</h2>
+    <section className="space-y-2 border-b pb-4 md:flex md:h-full md:w-fit md:flex-col md:justify-between md:border-r md:border-b-0 md:pr-4">
+      <div className="flex items-center justify-between space-y-2 space-x-2 md:flex-col md:text-center">
+        <h2 className="text-sm text-gray-500">Pedidos Confirmados</h2>
         <Badge variant="outline">{orders.length}</Badge>
       </div>
-      <ScrollArea>
+      <ScrollArea className="md:h-[50vh]">
         <div className="flex items-center gap-4 md:flex-col">
-          {orders.map((order) => (
-            <CardOrderBasic key={order.id} order={order} slug={slug} />
+          {confirmedOrders.map((order) => (
+            <CardOrderBasic
+              key={order.id}
+              order={order}
+              slug={slug}
+              onRemoveOrder={removeOrderFromList}
+            />
           ))}
         </div>
         <ScrollBar orientation="horizontal" className="md:hidden" />

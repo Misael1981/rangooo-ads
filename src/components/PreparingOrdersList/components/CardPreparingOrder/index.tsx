@@ -53,7 +53,7 @@ const CardPreparingOrder = ({ order, slug }: CardPreparingOrderProps) => {
     startTransition(async () => {
       const result = await startOutForDelivery(order.id, slug)
       if (result.success) {
-        toast.success("Produção iniciada!")
+        toast.success("Produção finalizada!")
       } else {
         toast.error(result.error)
       }

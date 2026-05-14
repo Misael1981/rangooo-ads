@@ -1,5 +1,7 @@
 import ClosedStoreScreen from "@/components/ClosedStoreScreen"
+import Header from "@/components/Header"
 import ListConfirmedOrders from "@/components/ListConfirmedOrders"
+import OrdersCompletedList from "@/components/OrdersCompletedList"
 import OutForDeliveryList from "@/components/OutForDeliveryList"
 import PreparingOrdersList from "@/components/PreparingOrdersList"
 import ReadyForPickupList from "@/components/ReadyForPickupList"
@@ -28,22 +30,30 @@ export default async function ProductionPage({
 
   const preparingOrders = orders.filter((order) => order.status === "PREPARING")
 
-  const OutForDeliveryOrders = orders.filter(
+  const outForDeliveryOrders = orders.filter(
     (order) => order.status === "OUT_FOR_DELIVERY",
   )
 
-  const ReadyForPickupOrders = orders.filter(
+  const readyForPickupOrders = orders.filter(
     (order) => order.status === "READY_FOR_PICKUP",
   )
 
+  const ordersCompleted = orders.filter((order) => order.status === "DELIVERED")
+
   return (
-    <div className="md:flex">
-      <ListConfirmedOrders initialOrders={confirmedOrders} slug={slug} />
-      <PreparingOrdersList orders={preparingOrders} slug={slug} />
-      <section className="space-y-2 border-t py-4 md:w-fit md:border-t-0 md:border-l md:pr-4">
-        <OutForDeliveryList orders={OutForDeliveryOrders} slug={slug} />
-        <ReadyForPickupList orders={ReadyForPickupOrders} slug={slug} />
-      </section>
+    <div className="flex h-screen flex-col justify-between">
+      <Header />
+      <main className="flex-1 p-4 md:flex">
+        <ListConfirmedOrders initialOrders={confirmedOrders} slug={slug} />
+        <PreparingOrdersList orders={preparingOrders} slug={slug} />
+        <section className="space-y-2 border-t pt-4 pl-4 md:w-fit md:border-t-0 md:border-l">
+          <OutForDeliveryList orders={outForDeliveryOrders} slug={slug} />
+          {readyForPickupOrders.length > 0 && (
+            <ReadyForPickupList orders={readyForPickupOrders} slug={slug} />
+          )}
+        </section>
+      </main>
+      <OrdersCompletedList orders={ordersCompleted} />
     </div>
   )
 }

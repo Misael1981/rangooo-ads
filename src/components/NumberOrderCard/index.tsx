@@ -24,7 +24,7 @@ const NumberOrderCard = ({ order, slug }: NumberOrderCardProps) => {
     startTransition(async () => {
       const result = await startFinalizeOrder(order.id, slug)
       if (result.success) {
-        toast.success("Produção iniciada!")
+        toast.success("Pedido Finalizado com sucesso!")
         setIsOpen(false)
       } else {
         toast.error(result.error)
@@ -34,7 +34,11 @@ const NumberOrderCard = ({ order, slug }: NumberOrderCardProps) => {
 
   return (
     <>
-      <Button variant="outline" onClick={handleClickButton}>
+      <Button
+        variant="outline"
+        onClick={handleClickButton}
+        className="md:w-full"
+      >
         {order.orderNumber}
       </Button>
 
