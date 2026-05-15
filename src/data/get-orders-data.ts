@@ -64,7 +64,7 @@ export async function getOrdersData(slug: string) {
     method: order.consumptionMethod as "DELIVERY" | "PICKUP" | "DINE_IN",
     paymentMethod: order.paymentMethod as PaymentMethod | null,
     createdAt: order.createdAt.toISOString(),
-    preparingAt: order.preparingAt?.toISOString() || null, // Garanta que trate o nulo
+    preparingAt: order.preparingAt?.toISOString() || null,
     dispatchedAt: order.dispatchedAt?.toISOString() || null,
     deliveredAt: order.deliveredAt?.toISOString() || null,
     address: parseAddress(order.deliveryAddress),

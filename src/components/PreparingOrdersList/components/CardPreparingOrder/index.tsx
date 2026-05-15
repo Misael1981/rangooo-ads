@@ -194,11 +194,7 @@ const CardPreparingOrder = ({ order, slug }: CardPreparingOrderProps) => {
         order={order}
         actionButton={
           <Button onClick={handleOutForDelivery} disabled={isPending}>
-            {isPending
-              ? "PROCESSANDO..."
-              : isPickup
-                ? "PRONTO PARA RETIRADA"
-                : "ENTREGAR"}
+            {isPending ? "PROCESSANDO..." : isPickup ? "RETIRADA" : "ENTREGAR"}
           </Button>
         }
       />

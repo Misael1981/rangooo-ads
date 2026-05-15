@@ -1,21 +1,67 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import CardOrderBasic from "../CardOrderBasic"
 import { ScrollArea, ScrollBar } from "../ui/scroll-area"
 import { OrderDTO } from "@/dtos/order.dto"
 import { Badge } from "../ui/badge"
+import { getPusherClient } from "@/lib/pusher-client"
+import { getConfirmedOrders } from "@/app/actions/get-confirmed-orders"
+import { toast } from "sonner"
 
 type ListConfirmedOrdersProps = {
   initialOrders: OrderDTO[]
   slug: string
+  restaurantId: string
 }
 
 const ListConfirmedOrders = ({
   initialOrders,
   slug,
+  restaurantId,
 }: ListConfirmedOrdersProps) => {
-  const [orders, setOrders] = useState<OrderDTO[]>(initialOrders)
+  const [orders, setOrders] = useState<OrderDTO[]>(initialOrders || [])
+
+  const playNotification = () => {
+    const audio = new Audio("/notification.mp3") // Verifique se o nome do arquivo está certo
+
+    audio.play().catch((error) => {
+      console.log(
+        "Autoplay bloqueado. O usuário precisa interagir com a página primeiro.",
+        error,
+      )
+    })
+  }
+
+  useEffect(() => {
+    const pusher = getPusherClient()
+    const channel = pusher.subscribe(`restaurant-${restaurantId}`)
+
+    const fetchConfirmedOrders = async () => {
+      try {
+        const result = await getConfirmedOrders(restaurantId, slug)
+        console.log("📦 Resultado da busca:", result)
+
+        if (result?.success && result.newOrders !== undefined) {
+          setOrders(result.newOrders) // ← atualiza o estado local
+        }
+      } catch (error) {
+        console.error("Erro na chamada da Action:", error)
+      }
+    }
+
+    channel.bind("order:created", (data: unknown) => {
+      console.log("🔔 Evento recebido:", data)
+      toast.success("Novo pedido confirmado!")
+      fetchConfirmedOrders()
+      playNotification()
+    })
+
+    return () => {
+      channel.unbind_all()
+      pusher.unsubscribe(`restaurant-${restaurantId}`)
+    }
+  }, [restaurantId, slug])
 
   const removeOrderFromList = (orderId: string) => {
     setOrders((prev) => prev.filter((o) => o.id !== orderId))
