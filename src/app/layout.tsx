@@ -4,6 +4,7 @@ import "./globals.css"
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/ThemeProvider"
 import { Toaster } from "sonner"
+import { EnableKitchenSoundOverlay } from "@/components/EnableKitchenSoundOverlay"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -47,7 +48,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div>{children}</div>
+          <div>
+            <EnableKitchenSoundOverlay />
+            {children}
+          </div>
           <Toaster />
         </ThemeProvider>
       </body>
