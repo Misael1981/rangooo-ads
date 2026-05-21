@@ -47,7 +47,11 @@ const NumberOrderCard = ({ order, slug }: NumberOrderCardProps) => {
         onOpenChange={setIsOpen}
         order={order}
         actionButton={
-          <Button onClick={handleFinalizeOrder} disabled={isPending}>
+          <Button
+            onClick={handleFinalizeOrder}
+            disabled={isPending}
+            className="w-full"
+          >
             {isPending ? "PROCESSANDO..." : "ENTREGUE"}
           </Button>
         }

@@ -5,23 +5,44 @@ import { pusherServer } from "@/lib/pusher-server"
 import { notifyClientAboutOrderUpdate } from "@/services/notification.service"
 import { revalidatePath } from "next/cache"
 
-export async function startOutForDelivery(orderId: string, slug: string) {
+export async function startOutForDelivery(
+  orderId: string,
+  slug: string,
+  method: string,
+) {
   try {
     // 1. Atualiza o status e grava o momento exato do preparo
-    await db.order.update({
-      where: { id: orderId },
-      data: {
-        status: "OUT_FOR_DELIVERY",
-        dispatchedAt: new Date(),
-      },
-    })
-
-    await pusherServer
-      .trigger(slug, "order-updated", {
-        id: orderId,
-        status: "OUT_FOR_DELIVERY",
+    if (method === "delivery") {
+      await db.order.update({
+        where: { id: orderId },
+        data: {
+          status: "OUT_FOR_DELIVERY",
+          dispatchedAt: new Date(),
+        },
       })
-      .catch((err) => console.error("❌ Erro Pusher KDS:", err))
+
+      await pusherServer
+        .trigger(slug, "order-updated", {
+          id: orderId,
+          status: "OUT_FOR_DELIVERY",
+        })
+        .catch((err) => console.error("❌ Erro Pusher KDS:", err))
+    } else {
+      await db.order.update({
+        where: { id: orderId },
+        data: {
+          status: "READY_FOR_PICKUP",
+          dispatchedAt: new Date(),
+        },
+      })
+
+      await pusherServer
+        .trigger(slug, "order-updated", {
+          id: orderId,
+          status: "READY_FOR_PICKUP",
+        })
+        .catch((err) => console.error("❌ Erro Pusher KDS:", err))
+    }
 
     revalidatePath(`/${slug}`)
 

@@ -43,7 +43,7 @@ const ListConfirmedOrders = ({
         console.log("📦 Resultado da busca:", result)
 
         if (result?.success && result.newOrders !== undefined) {
-          setOrders(result.newOrders) // ← atualiza o estado local
+          setOrders(result.newOrders)
         }
       } catch (error) {
         console.error("Erro na chamada da Action:", error)

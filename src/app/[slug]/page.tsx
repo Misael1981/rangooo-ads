@@ -9,9 +9,6 @@ import OutForDeliveryList from "@/components/OutForDeliveryList"
 import PreparingOrdersList from "@/components/PreparingOrdersList"
 import ReadyForPickupList from "@/components/ReadyForPickupList"
 import { getOrdersData } from "@/data/get-orders-data"
-import { OrderDTO } from "@/dtos/order.dto"
-import { db } from "@/lib/prisma"
-import { OrderStatus } from "@misael1981/rangooo-database"
 import { notFound } from "next/navigation"
 
 export default async function ProductionPage({
@@ -30,30 +27,7 @@ export default async function ProductionPage({
 
   const orders = data.orders
 
-  const pendingOrders = orders.filter(
-    (order) => order.status === "PENDING" || order.status === "CONFIRMED",
-  )
-
-  const orderIds = pendingOrders
-    .filter((o) => o.status === "PENDING")
-    .map((o) => o.id)
-
-  if (orderIds.length > 0) {
-    await db.order.updateMany({
-      where: {
-        id: { in: orderIds },
-        status: "PENDING",
-      },
-      data: {
-        status: "CONFIRMED",
-      },
-    })
-  }
-
-  const confirmedOrders: OrderDTO[] = pendingOrders.map((order) => ({
-    ...order,
-    status: OrderStatus.CONFIRMED,
-  }))
+  const confirmedOrders = orders.filter((order) => order.status === "CONFIRMED")
 
   const preparingOrders = orders.filter((order) => order.status === "PREPARING")
 

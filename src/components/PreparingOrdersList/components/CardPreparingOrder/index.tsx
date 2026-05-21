@@ -51,7 +51,7 @@ const CardPreparingOrder = ({ order, slug }: CardPreparingOrderProps) => {
 
   const handleOutForDelivery = () => {
     startTransition(async () => {
-      const result = await startOutForDelivery(order.id, slug)
+      const result = await startOutForDelivery(order.id, slug, order.method)
       if (result.success) {
         toast.success("Produção finalizada!")
       } else {
@@ -193,7 +193,11 @@ const CardPreparingOrder = ({ order, slug }: CardPreparingOrderProps) => {
         onOpenChange={setIsOpen}
         order={order}
         actionButton={
-          <Button onClick={handleOutForDelivery} disabled={isPending}>
+          <Button
+            onClick={handleOutForDelivery}
+            disabled={isPending}
+            className="w-full"
+          >
             {isPending ? "PROCESSANDO..." : isPickup ? "RETIRADA" : "ENTREGAR"}
           </Button>
         }

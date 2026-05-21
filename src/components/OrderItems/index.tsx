@@ -8,7 +8,7 @@ type OrderItemsProps = {
 
 const OrderItems = ({ order }: OrderItemsProps) => {
   return (
-    <div className="h-[30vh]">
+    <div className="h-[15vh] overflow-y-auto md:h-[30vh]">
       <ScrollArea className="h-full">
         <div className="space-y-3">
           {order.items.map((item, index) => (

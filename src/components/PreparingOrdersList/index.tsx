@@ -17,7 +17,7 @@ const PreparingOrdersList = ({ orders, slug }: PreparingOrdersListProps) => {
         </h2>
         <Badge variant="outline">{orders.length}</Badge>
       </div>
-      <ScrollArea className="h-[30vh] md:h-[60vh]">
+      <ScrollArea className="h-[40vh] md:h-[60vh]">
         <div className="space-y-4">
           {orders.map((order) => (
             <CardPreparingOrder key={order.id} order={order} slug={slug} />

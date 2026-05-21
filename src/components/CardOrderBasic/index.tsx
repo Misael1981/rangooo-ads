@@ -70,17 +70,19 @@ const CardOrderBasic = ({
   return (
     <>
       <Card
-        className={`w-24 gap-0 border-2 p-2 transition-all duration-500 ${getBorderColor()}`}
+        className={`gap-0 border-2 p-2 transition-all duration-500 ${getBorderColor()}`}
         onClick={handleClickCard}
       >
         <div className="flex flex-col text-center">
-          <span className="text-lg font-bold">#{order.orderNumber}</span>
-
-          <span
-            className={`mt-1 rounded-md border px-2 py-1 text-xs font-semibold uppercase ${methodConfig.className}`}
-          >
-            {methodConfig.label}
-          </span>
+          <div className="space-x-2">
+            <span className="text-lg font-bold">{order.orderNumber}</span>
+            <span className="md:hidden"> - </span>
+            <span
+              className={`mt-1 rounded-md border px-2 py-1 text-xs font-semibold uppercase ${methodConfig.className}`}
+            >
+              {methodConfig.label}
+            </span>
+          </div>
 
           <span className="mt-1 font-mono text-xs">
             {minutesElapsed} min atrás
@@ -92,7 +94,7 @@ const CardOrderBasic = ({
         onOpenChange={setIsOpen}
         order={order}
         actionButton={
-          <Button onClick={handleStart} disabled={isPending}>
+          <Button onClick={handleStart} disabled={isPending} className="w-full">
             {isPending ? "INICIANDO..." : "INICIAR PREPARO"}
           </Button>
         }
