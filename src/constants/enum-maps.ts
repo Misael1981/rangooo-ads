@@ -1,4 +1,4 @@
-import { PaymentMethod } from "@misael1981/rangooo-database"
+import { OrderStatus, PaymentMethod } from "@misael1981/rangooo-database"
 
 export const METHOD_CONFIG = {
   DELIVERY: {
@@ -20,4 +20,28 @@ export const PAYMENT_METHOD_CONFIG: Record<PaymentMethod, string> = {
   CREDIT_CARD: "Cartão de Crédito",
   DEBIT_CARD: "Cartão de Débito",
   PIX: "PIX",
+}
+
+export const STATUS_CONFIGS: Record<OrderStatus, { label: string }> = {
+  PENDING: {
+    label: "Pendente",
+  },
+  CONFIRMED: {
+    label: "Confirmado",
+  },
+  PREPARING: {
+    label: "Em Preparo",
+  },
+  OUT_FOR_DELIVERY: {
+    label: "Saiu para a entrega",
+  },
+  READY_FOR_PICKUP: {
+    label: "Pronto para retirada",
+  },
+  DELIVERED: {
+    label: "Entregue",
+  },
+  CANCELED: {
+    label: "Cancelado",
+  },
 }

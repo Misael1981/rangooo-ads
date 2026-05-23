@@ -1,5 +1,6 @@
 "use server"
 
+import { STATUS_CONFIGS } from "@/constants/enum-maps"
 import { db } from "@/lib/prisma"
 import webpush from "web-push"
 
@@ -18,6 +19,9 @@ export async function sendPushToClient({ orderId }: { orderId: string }) {
 
   if (!order) return
 
+  const currentStatus =
+    STATUS_CONFIGS[order.status as keyof typeof STATUS_CONFIGS]
+
   // 2. Busca as subscriptions do usuário que fez o pedido
   const subscriptions = await db.clientPushSubscription.findMany({
     where: { userId: order.userId },
@@ -35,7 +39,7 @@ export async function sendPushToClient({ orderId }: { orderId: string }) {
         },
         JSON.stringify({
           title: `Pedido #${order.orderNumber} atualizado!`,
-          body: "Toque para acompanhar seu pedido",
+          body: `Seu pedido está: ${currentStatus.label}. Toque para acompanhar.`,
           url: `https://rangooo.vercel.app/meus-pedidos`,
         }),
       )
