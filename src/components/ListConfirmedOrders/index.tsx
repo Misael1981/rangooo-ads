@@ -23,7 +23,7 @@ const ListConfirmedOrders = ({
   const [orders, setOrders] = useState<OrderDTO[]>(initialOrders || [])
 
   const playNotification = () => {
-    const audio = new Audio("/notification.mp3") // Verifique se o nome do arquivo está certo
+    const audio = new Audio("/notification.mp3")
 
     audio.play().catch((error) => {
       console.log(

@@ -10,48 +10,38 @@ export async function startOutForDelivery(
   slug: string,
   method: string,
 ) {
+  console.log("Como o método está chegando: ", method)
+
   try {
-    // 1. Atualiza o status e grava o momento exato do preparo
-    if (method === "delivery") {
-      await db.order.update({
-        where: { id: orderId },
-        data: {
-          status: "OUT_FOR_DELIVERY",
-          dispatchedAt: new Date(),
-        },
-      })
+    const status =
+      method === "DELIVERY" ? "OUT_FOR_DELIVERY" : "READY_FOR_PICKUP"
 
-      await pusherServer
-        .trigger(slug, "order-updated", {
-          id: orderId,
-          status: "OUT_FOR_DELIVERY",
-        })
-        .catch((err) => console.error("❌ Erro Pusher KDS:", err))
-    } else {
-      await db.order.update({
-        where: { id: orderId },
-        data: {
-          status: "READY_FOR_PICKUP",
-          dispatchedAt: new Date(),
-        },
-      })
+    await db.order.update({
+      where: { id: orderId },
+      data: {
+        status,
+        dispatchedAt: new Date(),
+      },
+    })
 
-      await pusherServer
-        .trigger(slug, "order-updated", {
-          id: orderId,
-          status: "READY_FOR_PICKUP",
-        })
-        .catch((err) => console.error("❌ Erro Pusher KDS:", err))
-    }
+    await pusherServer
+      .trigger(slug, "order-updated", {
+        id: orderId,
+        status,
+      })
+      .catch((err) => console.error("❌ Erro Pusher KDS:", err))
 
     revalidatePath(`/${slug}`)
 
-    // Notifica cada cliente individualmente
     await notifyClientAboutOrderUpdate(orderId)
 
     return { success: true }
   } catch (error) {
     console.error("ERRO_START_PREPARATION:", error)
-    return { success: false, error: "Não foi possível iniciar o preparo." }
+
+    return {
+      success: false,
+      error: "Não foi possível iniciar o preparo.",
+    }
   }
 }

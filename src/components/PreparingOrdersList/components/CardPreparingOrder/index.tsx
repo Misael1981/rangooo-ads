@@ -198,7 +198,11 @@ const CardPreparingOrder = ({ order, slug }: CardPreparingOrderProps) => {
             disabled={isPending}
             className="w-full"
           >
-            {isPending ? "PROCESSANDO..." : isPickup ? "RETIRADA" : "ENTREGAR"}
+            {isPending
+              ? "PROCESSANDO..."
+              : isPickup
+                ? "Pronto para Retirada"
+                : "Saiu para entrega"}
           </Button>
         }
       />
