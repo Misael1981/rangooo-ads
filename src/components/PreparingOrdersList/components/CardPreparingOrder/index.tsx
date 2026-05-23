@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { METHOD_CONFIG } from "@/constants/enum-maps"
 import { OrderDTO } from "@/dtos/order.dto"
-import { useEffect, useState, useTransition } from "react"
+import { useOrderTimeStatus } from "@/hooks/use-order-time-status"
+import { useState, useTransition } from "react"
 import { toast } from "sonner"
 
 type CardPreparingOrderProps = {
@@ -17,33 +18,11 @@ type CardPreparingOrderProps = {
 
 const CardPreparingOrder = ({ order, slug }: CardPreparingOrderProps) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [minutesElapsed, setMinutesElapsed] = useState(0)
   const [isPending, startTransition] = useTransition()
 
-  useEffect(() => {
-    const calculateTime = () => {
-      if (!order.preparingAt) return
-
-      const start = new Date(order.preparingAt).getTime()
-      const now = new Date().getTime()
-      const diffInMs = now - start
-
-      setMinutesElapsed(Math.floor(diffInMs / 60000))
-    }
-
-    calculateTime()
-    const interval = setInterval(calculateTime, 60000)
-
-    return () => clearInterval(interval)
-  }, [order.preparingAt])
-
-  const getBorderColor = () => {
-    if (minutesElapsed >= 10) {
-      return "border-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.3)]"
-    }
-
-    return "border-green-500"
-  }
+  const { minutesElapsed, borderColor } = useOrderTimeStatus({
+    time: order.preparingAt ?? order.createdAt,
+  })
 
   const handleClickCard = () => {
     setIsOpen(true)
@@ -68,7 +47,7 @@ const CardPreparingOrder = ({ order, slug }: CardPreparingOrderProps) => {
     <>
       <Card
         onClick={handleClickCard}
-        className={`border-2 p-2 transition-all duration-500 ${getBorderColor()}`}
+        className={`border-2 p-2 transition-all duration-500 ${borderColor}`}
       >
         <CardHeader>
           <Badge>{order.orderNumber}</Badge>

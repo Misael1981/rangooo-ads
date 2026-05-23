@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import { Card } from "../ui/card"
 import { OrderDTO } from "@/dtos/order.dto"
 import DialogSelectedOrder from "../DialogSelectedOrder"
@@ -8,6 +8,7 @@ import { METHOD_CONFIG } from "@/constants/enum-maps"
 import { Button } from "../ui/button"
 import { startPreparation } from "@/app/actions/start-preparation"
 import { toast } from "sonner"
+import { useOrderTimeStatus } from "@/hooks/use-order-time-status"
 
 type CardOrderBasicProps = {
   order: OrderDTO
@@ -20,33 +21,12 @@ const CardOrderBasic = ({
   slug,
   onRemoveOrder,
 }: CardOrderBasicProps) => {
-  const [minutesElapsed, setMinutesElapsed] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
-  useEffect(() => {
-    const calculateTime = () => {
-      const start = new Date(order.createdAt).getTime()
-      const now = new Date().getTime()
-      const diffInMs = now - start
-
-      setMinutesElapsed(Math.floor(diffInMs / 60000))
-    }
-
-    calculateTime()
-
-    const interval = setInterval(calculateTime, 60000)
-
-    return () => clearInterval(interval)
-  }, [order.createdAt])
-
-  const getBorderColor = () => {
-    if (minutesElapsed >= 10) {
-      return "border-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.3)]"
-    }
-
-    return "border-green-500"
-  }
+  const { minutesElapsed, borderColor } = useOrderTimeStatus({
+    time: order.createdAt,
+  })
 
   const methodConfig = METHOD_CONFIG[order.method]
 
@@ -70,7 +50,7 @@ const CardOrderBasic = ({
   return (
     <>
       <Card
-        className={`gap-0 border-2 p-2 transition-all duration-500 ${getBorderColor()}`}
+        className={`gap-0 border-2 p-2 transition-all duration-500 ${borderColor}`}
         onClick={handleClickCard}
       >
         <div className="flex flex-col text-center">
